@@ -12,9 +12,27 @@ class ExerciseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Exercise::all();
+        $query = Exercise::query();
+
+
+        if ($request->has('name')) {
+            $query->where('name', 'like', $request->name);
+        }
+        if($request->has('updated_at')) {
+            $query->where('updated_at', $request->updated_at);
+        }
+
+        if ($request->has('created_at')) {
+            $query->where('created_at', 'like', $request->created_at);
+        }
+
+        if ($request->has('sort_by')) {
+            $sortOrder = $request->has('sort_order') ? $request->sort_order : 'asc';
+            $query->orderBy($request->sort_by, $sortOrder);
+        }
+        return $query->get();
     }
 
     /**

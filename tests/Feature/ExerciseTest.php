@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Exercise;
+use Tests\TestHelper;
 
 use function PHPUnit\Framework\assertJson;
 
@@ -55,6 +57,58 @@ class ExerciseTest extends TestCase
                 ['user_id' => $user->id],
                 ['user_id' => $user->id],
             ]);
+    }
+
+    /** @test */
+    public function user_can_get_all_his_exercises_with_name_filter(): void
+    {
+        $user = User::factory()->create();
+        $exercises = Exercise::factory()->count(3)->create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->actingAs($user)
+                        ->getJson('/api/exercise?name=' . $exercises[0]->name);
+
+        $response->assertStatus(200);
+        $response->assertExactJson([$exercises[0]->toArray()]);
+    }
+
+    /** @test */
+    public function user_can_get_all_his_exercises_that_start_with_A(): void
+    {
+        $user = User::factory()->create();
+        $exercisesA = Exercise::factory()->count(3)->create([
+            'name' => 'A' . $this->faker->sentence,
+            'user_id' => $user->id,
+        ]);
+        Exercise::factory()->count(3)->create([
+            'name' => 'B' . $this->faker->sentence,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->actingAs($user)
+                        ->getJson('/api/exercise?name=A%');
+
+        $response->assertStatus(200);
+        $response->assertExactJson($exercisesA->toArray());
+    }
+
+    /** @test */
+    public function user_can_get_all_his_exercises_sorted_by_name_desc(): void
+    {
+        $user = User::factory()->create();
+        $exercises = Exercise::factory()->count(3)->create([
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->actingAs($user)
+                        ->getJson('/api/exercise?sort_by=name&sort_order=desc');
+
+        $sortedExercises = $exercises->sortByDesc('name')->values();
+
+        $response->assertStatus(200);
+        $this->assertTrue(TestHelper::arrays_have_same_order($sortedExercises->toArray(), $response->json()));
     }
 
     /** @test */
