@@ -25,7 +25,7 @@ class ExerciseTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                        ->getJson('/api/exercise');
+                        ->getJson('/api/exercises');
 
         $response->assertStatus(200);
         $response->assertJson($exercises->map(function ($exercise) {
@@ -49,7 +49,7 @@ class ExerciseTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                     ->getJson('/api/exercise');
+                     ->getJson('/api/exercises');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -68,7 +68,7 @@ class ExerciseTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                        ->getJson('/api/exercise?name=' . $exercises[0]->name);
+                        ->getJson('/api/exercises?name=' . $exercises[0]->name);
 
         $response->assertStatus(200);
         $response->assertExactJson([$exercises[0]->toArray()]);
@@ -88,7 +88,7 @@ class ExerciseTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                        ->getJson('/api/exercise?name=A%');
+                        ->getJson('/api/exercises?name=A%');
 
         $response->assertStatus(200);
         $response->assertExactJson($exercisesA->toArray());
@@ -103,7 +103,7 @@ class ExerciseTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                        ->getJson('/api/exercise?sort_by=name&sort_order=desc');
+                        ->getJson('/api/exercises?sort_by=name&sort_order=desc');
 
         $sortedExercises = $exercises->sortByDesc('name')->values();
 
@@ -120,7 +120,7 @@ class ExerciseTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                        ->getJson("/api/exercise/{$exercise->id}");
+                        ->getJson("/api/exercises/{$exercise->id}");
 
         $response->assertStatus(200)
                 ->assertJson([
@@ -139,7 +139,7 @@ class ExerciseTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-                        ->getJson("/api/exercise/{$exercise->id}");
+                        ->getJson("/api/exercises/{$exercise->id}");
 
         $response->assertStatus(404);
     }
@@ -151,7 +151,7 @@ class ExerciseTest extends TestCase
         $exercise = Exercise::factory()->make();
 
         $response = $this->actingAs($user)
-                        ->postJson('/api/exercise', [
+                        ->postJson('/api/exercises', [
                             'name' => $exercise->name,
                         ]);
 
@@ -171,7 +171,7 @@ class ExerciseTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-                        ->postJson('/api/exercise', []);
+                        ->postJson('/api/exercises', []);
 
         $response->assertStatus(422)
                 ->assertJsonValidationErrors('name');
@@ -188,7 +188,7 @@ class ExerciseTest extends TestCase
         $newName = $this->faker->sentence;
 
         $response = $this->actingAs($user)
-                        ->putJson("/api/exercise/{$exercise->id}", [
+                        ->putJson("/api/exercises/{$exercise->id}", [
                             'name' => $newName,
                         ]);
 
@@ -213,7 +213,7 @@ class ExerciseTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-                        ->putJson("/api/exercise/{$exercise->id}", [
+                        ->putJson("/api/exercises/{$exercise->id}", [
                             'name' => $this->faker->sentence,
                         ]);
 
@@ -229,7 +229,7 @@ class ExerciseTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-                        ->deleteJson("/api/exercise/{$exercise->id}");
+                        ->deleteJson("/api/exercises/{$exercise->id}");
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing('exercises', [
@@ -247,7 +247,7 @@ class ExerciseTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
-                        ->deleteJson("/api/exercise/{$exercise->id}");
+                        ->deleteJson("/api/exercises/{$exercise->id}");
 
         $response->assertStatus(404);
     }

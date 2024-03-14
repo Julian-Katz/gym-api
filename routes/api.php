@@ -24,7 +24,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return $request->user();
     });
 
-    Route::resource('exercise', ExerciseController::class)->except([
+    Route::resource('exercises', ExerciseController::class)->except([
         'create',
         'edit',
     ]);;
