@@ -32,5 +32,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('workouts', WorkoutController::class)->except([
         'create',
         'edit',
-    ]);;
+    ]);
 });
