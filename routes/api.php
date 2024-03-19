@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\ExerciseController;
-
+use App\Http\Controllers\WorkoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +25,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::resource('exercises', ExerciseController::class)->except([
+        'create',
+        'edit',
+    ]);
+
+    Route::resource('workouts', WorkoutController::class)->except([
         'create',
         'edit',
     ]);;
