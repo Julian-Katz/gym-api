@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('exercise_workout', function (Blueprint $table) {
+        Schema::create('sets', function (Blueprint $table)
+        {
             $table->id();
             $table->foreignId('exercise_id')->constrained();
             $table->foreignId('workout_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->integer('position');
             $table->integer('repetitions');
-            $table->integer('duration');
-            $table->integer('break_afterwards');
+            $table->integer('duration')->nullable();
+            $table->integer('break_afterwards')->nullable();
+            $table->timestamps();
 
             $table->unique(['exercise_id', 'workout_id', 'position']);
-
-            $table->timestamps();
         });
     }
 

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use App\Models\Scopes\UserScope;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 #[ScopedBy([UserScope::class])]
 class Exercise extends Model
@@ -14,10 +16,8 @@ class Exercise extends Model
 
     protected $fillable = ['name', 'user_id'];
 
-    public function workouts()
+    public function sets(): HasMany
     {
-        return $this->belongsToMany(Workout::class)
-            ->withPivot(['position', 'repetitions', 'break_afterwards'])
-            ->withTimestamps();
+        return $this->hasMany(Set::class);
     }
 }
