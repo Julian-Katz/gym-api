@@ -11,6 +11,8 @@ use App\Models\Exercise;
 
 class WorkoutTest extends TestCase
 {
+    use RefreshDatabase, WithFaker;
+
     /** @test */
     public function user_can_get_his_workouts(): void
     {
