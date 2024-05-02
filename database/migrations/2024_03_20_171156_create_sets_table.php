@@ -20,10 +20,8 @@ return new class extends Migration
             $table->integer('position');
             $table->integer('repetitions');
             $table->integer('duration')->nullable();
-            $table->integer('break_afterwards')->nullable();
+            $table->integer('break_afterwards')->default(0);
             $table->timestamps();
-
-            $table->unique(['exercise_id', 'workout_id', 'position']);
         });
     }
 

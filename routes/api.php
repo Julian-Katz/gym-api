@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\WorkoutController;
+use App\Http\Controllers\SetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     ]);
 
     Route::resource('workouts', WorkoutController::class)->except([
+        'create',
+        'edit',
+    ]);
+
+    Route::resource('workouts.sets', SetController::class)->except([
         'create',
         'edit',
     ]);

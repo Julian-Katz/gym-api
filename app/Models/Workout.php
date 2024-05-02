@@ -26,4 +26,29 @@ class Workout extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function createFreeSetPosition(int $beforeSetId = null): int
+    {
+        $sets = $this->sets;
+        if ($beforeSetId === null) {
+            return $sets->max('position') + 1000;
+        }
+        $basePosition = $sets->find($beforeSetId)->position;
+        $positionBeforeBasePosition = $sets->where('position', '<', $basePosition)->max('position') ?? 0;
+        if ($basePosition  - $positionBeforeBasePosition > 1) {
+            $middlePosition = round($basePosition -  ($basePosition  - $positionBeforeBasePosition) / 2);
+            return $middlePosition;
+        } else {
+            $sets->where('position', '>=', $basePosition)->each(function ($set, $i) {
+                if ($i === 0) {
+                    $set->position = $set->position + 1000;
+                    $set->save();
+                } else {
+                    $set->position += 2000;
+                    $set->save();
+                }
+            });
+            return $basePosition;
+        }
+    }
 }
