@@ -22,7 +22,7 @@ class WorkoutTest extends TestCase
         $response = $this->actingAs($user)->getJson('/api/workouts');
 
         $response->assertStatus(200)
-            ->assertJson([$workout->toArray()]);
+            ->assertJson(['data' => [$workout->toArray()]]);
     }
 
     /** @test */
@@ -49,7 +49,7 @@ class WorkoutTest extends TestCase
         $response = $this->actingAs($user)->postJson('/api/workouts', $workout);
 
         $response->assertStatus(201)
-            ->assertJson($workout);
+            ->assertJson(['data' => $workout]);
     }
     /** @test */
     public function user_can_not_create_workout_for_another_user(): void
@@ -74,7 +74,7 @@ class WorkoutTest extends TestCase
         $response = $this->actingAs($user)->getJson("/api/workouts/{$workout->id}");
 
         $response->assertStatus(200)
-            ->assertJson($workout->toArray());
+            ->assertJson(['data' => $workout->toArray()]);
     }
 
     /** @test */
@@ -99,7 +99,7 @@ class WorkoutTest extends TestCase
         $response = $this->actingAs($user)->putJson("/api/workouts/{$workout->id}", $newWorkout);
 
         $response->assertStatus(200)
-            ->assertJson($newWorkout);
+            ->assertJson(['data' => $newWorkout]);
     }
 
     /** @test */

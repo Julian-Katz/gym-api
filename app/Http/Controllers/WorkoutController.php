@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Workout;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\WorkoutResource;
 
 class WorkoutController extends Controller
 {
@@ -13,7 +14,7 @@ class WorkoutController extends Controller
      */
     public function index()
     {
-        return Workout::all();
+        return WorkoutResource::collection(Workout::all());
     }
 
     /**
@@ -30,7 +31,7 @@ class WorkoutController extends Controller
         ]);
         $validated['user_id'] = Auth::id();
         $workout = Workout::create($validated);
-        return $workout;
+        return new WorkoutResource($workout);
     }
 
     /**
@@ -38,7 +39,7 @@ class WorkoutController extends Controller
      */
     public function show(string $id)
     {
-        return Workout::findOrFail($id);
+        return new WorkoutResource(Workout::findOrFail($id));
     }
 
     /**
@@ -52,7 +53,7 @@ class WorkoutController extends Controller
             'name' => 'required|string|max:255',
         ]);
         $workout->update($validated);
-        return $workout;
+        return new WorkoutResource($workout);
     }
 
     /**
