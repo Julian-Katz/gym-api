@@ -26,12 +26,7 @@ class ExerciseTest extends TestCase
                         ->getJson('/api/exercises');
 
         $response->assertStatus(200);
-        $response->assertJson($exercises->map(function ($exercise) {
-            return [
-                'id' => $exercise->id,
-                'name' => $exercise->name,
-            ];
-        })->all());
+        $response->assertJson(['data' => $exercises->toArray()]);
     }
 
     /** @test */
@@ -51,9 +46,11 @@ class ExerciseTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                ['user_id' => $user->id],
-                ['user_id' => $user->id],
-                ['user_id' => $user->id],
+                'data' => [
+                    ['user_id' => $user->id],
+                    ['user_id' => $user->id],
+                    ['user_id' => $user->id],
+                ],
             ]);
     }
 
@@ -69,7 +66,7 @@ class ExerciseTest extends TestCase
                         ->getJson('/api/exercises?name=' . $exercises[0]->name);
 
         $response->assertStatus(200);
-        $response->assertExactJson([$exercises[0]->toArray()]);
+        $response->assertExactJson(['data' => [$exercises[0]->toArray()]]);
     }
 
     /** @test */
@@ -89,7 +86,7 @@ class ExerciseTest extends TestCase
                         ->getJson('/api/exercises?name=A%');
 
         $response->assertStatus(200);
-        $response->assertExactJson($exercisesA->toArray());
+        $response->assertExactJson(['data' => $exercisesA->toArray()]);
     }
 
     /** @test */
@@ -106,7 +103,7 @@ class ExerciseTest extends TestCase
         $sortedExercises = $exercises->sortByDesc('name')->values();
 
         $response->assertStatus(200);
-        $this->assertTrue(TestHelper::arrays_have_same_order($sortedExercises->toArray(), $response->json()));
+        $this->assertTrue(TestHelper::arrays_have_same_order($sortedExercises->toArray(), $response->json()['data']));
     }
 
     /** @test */
@@ -121,10 +118,10 @@ class ExerciseTest extends TestCase
                         ->getJson("/api/exercises/{$exercise->id}");
 
         $response->assertStatus(200)
-                ->assertJson([
+                ->assertJson(['data' => [
                     'id' => $exercise->id,
                     'name' => $exercise->name,
-                ]);
+                ]]);
     }
 
     /** @test */
@@ -154,9 +151,9 @@ class ExerciseTest extends TestCase
                         ]);
 
         $response->assertStatus(201)
-                ->assertJson([
-                    'name' => $exercise->name,
-                ]);
+                ->assertJson(
+                    ['data' => ['name' => $exercise->name,]]
+                );
         $this->assertDatabaseHas('exercises', [
             'name' => $exercise->name,
             'user_id' => $user->id,
@@ -191,10 +188,10 @@ class ExerciseTest extends TestCase
                         ]);
 
         $response->assertStatus(200)
-                ->assertJson([
+                ->assertJson(['data' => [
                     'id' => $exercise->id,
                     'name' => $newName,
-                ]);
+                ]]);
         $this->assertDatabaseHas('exercises', [
             'id' => $exercise->id,
             'name' => $newName,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Exercise;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ExerciseResource;
 
 
 class ExerciseController extends Controller
@@ -32,7 +33,7 @@ class ExerciseController extends Controller
             $sortOrder = $request->has('sort_order') ? $request->sort_order : 'asc';
             $query->orderBy($request->sort_by, $sortOrder);
         }
-        return $query->get();
+        return ExerciseResource::collection($query->get());
     }
 
     /**
@@ -45,7 +46,7 @@ class ExerciseController extends Controller
         ]);
         $validated['user_id'] = Auth::id();
         $exercise = Exercise::create($validated);
-        return $exercise;
+        return new ExerciseResource($exercise);
     }
 
     /**
@@ -53,7 +54,7 @@ class ExerciseController extends Controller
      */
     public function show(string $id)
     {
-        return Exercise::findOrFail($id);
+        return new ExerciseResource(Exercise::findOrFail($id));
     }
 
     /**
@@ -66,7 +67,7 @@ class ExerciseController extends Controller
             'name' => 'required|string|max:255',
         ]);
         $exercise->update($validated);
-        return $exercise;
+        return new ExerciseResource($exercise);
     }
 
     /**
